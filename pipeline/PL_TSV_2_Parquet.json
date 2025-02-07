@@ -40,7 +40,8 @@
 						"linkedServiceName": {
 							"referenceName": "AzureBlobStoragespring2025",
 							"type": "LinkedServiceReference"
-						}
+						},
+						"path": ""
 					},
 					"translator": {
 						"type": "TabularTranslator",
