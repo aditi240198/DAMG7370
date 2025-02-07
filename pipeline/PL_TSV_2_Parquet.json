@@ -101,6 +101,12 @@
 							"type": "ParquetReadSettings"
 						}
 					},
+					"sink": {
+						"type": "SnowflakeV2Sink",
+						"importSettings": {
+							"type": "SnowflakeImportCopyCommand"
+						}
+					},
 					"enableStaging": false
 				},
 				"inputs": [
@@ -113,6 +119,12 @@
 								"type": "Expression"
 							}
 						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_Snowflake",
+						"type": "DatasetReference"
 					}
 				]
 			}
