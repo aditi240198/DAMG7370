@@ -8,7 +8,7 @@
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.00:30:00",
-					"retry": 2,
+					"retry": 1,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
@@ -35,14 +35,7 @@
 							"type": "ParquetWriteSettings"
 						}
 					},
-					"enableStaging": true,
-					"stagingSettings": {
-						"linkedServiceName": {
-							"referenceName": "AzureBlobStoragespring2025",
-							"type": "LinkedServiceReference"
-						},
-						"path": ""
-					},
+					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
 						"typeConversion": true,
@@ -63,10 +56,7 @@
 						"referenceName": "ds_Parquet",
 						"type": "DatasetReference",
 						"parameters": {
-							"filename": {
-								"value": "@variables('myFileName')",
-								"type": "Expression"
-							}
+							"filename": "pet_lic.parquet"
 						}
 					}
 				]
@@ -74,8 +64,6 @@
 			{
 				"name": "Copy data1",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Tsv_2_Parquet",
@@ -115,7 +103,13 @@
 				"inputs": [
 					{
 						"referenceName": "ds_Parquet",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filename": {
+								"value": "@variables('myFileName')",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
