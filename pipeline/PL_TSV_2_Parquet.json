@@ -62,10 +62,8 @@
 				]
 			},
 			{
-				"name": "Copy data1",
+				"name": "parquet_2_snowflake",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Tsv_2_Parquet",
@@ -75,8 +73,8 @@
 					}
 				],
 				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
+					"timeout": "0.00:30:00",
+					"retry": 1,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
@@ -85,9 +83,25 @@
 				"typeProperties": {
 					"source": {
 						"type": "ParquetSource",
+						"additionalColumns": [
+							{
+								"name": "di_job_id",
+								"value": {
+									"value": "@pipeline().RunId",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "di_load_dt",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							}
+						],
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
+							"recursive": false,
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -100,24 +114,32 @@
 							"type": "SnowflakeImportCopyCommand"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "AzureBlobStoragespring2025",
+							"type": "LinkedServiceReference"
+						},
+						"path": "stage"
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "ds_Parquet",
 						"type": "DatasetReference",
 						"parameters": {
-							"filename": {
-								"value": "@variables('myFileName')",
-								"type": "Expression"
-							}
+							"filename": "pet_lic.parquet"
 						}
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "ds_Snowflake",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"schemaname": "PET_LICENSING",
+							"tablename": "PET_LICENSE_STAGE"
+						}
 					}
 				]
 			}
