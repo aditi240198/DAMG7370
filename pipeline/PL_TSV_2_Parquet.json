@@ -62,7 +62,7 @@
 						"referenceName": "ds_Parquet",
 						"type": "DatasetReference",
 						"parameters": {
-							"fileName": {
+							"filename": {
 								"value": "@variables('myFileName')",
 								"type": "Expression"
 							}
@@ -125,11 +125,6 @@
 				]
 			}
 		],
-		"parameters": {
-			"filename": {
-				"type": "string"
-			}
-		},
 		"variables": {
 			"myFileName": {
 				"type": "String",
