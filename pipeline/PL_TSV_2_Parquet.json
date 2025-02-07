@@ -60,13 +60,7 @@
 				"outputs": [
 					{
 						"referenceName": "ds_Parquet",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": {
-								"value": "@variables('myFileName')",
-								"type": "Expression"
-							}
-						}
+						"type": "DatasetReference"
 					}
 				]
 			},
