@@ -5,7 +5,7 @@
 		"annotations": [],
 		"type": "AzureBlobStorage",
 		"typeProperties": {
-			"sasUri": "https://blobstoragespring2025.blob.core.windows.net/"
+			"sasUri": "https://blobstoragespring2025.blob.core.windows.net"
 		}
 	}
 }
