@@ -120,7 +120,7 @@
 			}
 		],
 		"variables": {
-			"myFileName": {
+			"filename": {
 				"type": "String",
 				"defaultValue": "pet_lic_data.parquet"
 			}
