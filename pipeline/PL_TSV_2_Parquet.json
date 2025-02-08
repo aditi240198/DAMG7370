@@ -5,6 +5,8 @@
 			{
 				"name": "Tsv_2_Parquet",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.00:30:00",
@@ -64,6 +66,8 @@
 			{
 				"name": "parquet_2_snowflake",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Tsv_2_Parquet",
