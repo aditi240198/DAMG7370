@@ -5,8 +5,6 @@
 			{
 				"name": "nypd_csv_to_snowflake",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.00:30:00",
@@ -61,7 +59,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DelimitedText2",
+						"referenceName": "DelimitedText3",
 						"type": "DatasetReference"
 					}
 				],
