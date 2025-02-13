@@ -66,7 +66,11 @@
 				"outputs": [
 					{
 						"referenceName": "SnowflakeTable1",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"schemaname": "ARREST_SCHEMA",
+							"tablename": "NYPD_ARREST_STAGE"
+						}
 					}
 				]
 			}
