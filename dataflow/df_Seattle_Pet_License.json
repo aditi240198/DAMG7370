@@ -26,7 +26,14 @@
 				"     validateSchema: false,",
 				"     limit: 100,",
 				"     ignoreNoFilesFound: false) ~> readTSVfile",
-				"readTSVfile derive() ~> TransposeColumns"
+				"readTSVfile derive(License_Issue_Dt = toDate({License_Issue_Date}, \"MMMM dd yyyy\"),",
+				"          Secondary_Breed = iifNull({Secondary_Breed},'Unknown'),",
+				"          ZIP_Code = lpad(toString({ZIP_Code}),5,'0'),",
+				"          Species = upper(Species),",
+				"          License_Number = toInteger(translate({License_Number},'S','')),",
+				"          Animal_Name = translate({Animals_Name}, '()[]',''),",
+				"          DI_Job_Id = $Job_Id_Param,",
+				"          DI_Load_Date = currentDate()) ~> TransposeColumns"
 			]
 		}
 	}
