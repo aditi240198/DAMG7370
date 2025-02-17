@@ -15,25 +15,24 @@
 			"sinks": [],
 			"transformations": [
 				{
-					"name": "TransposeColumns"
+					"name": "TransposeCoulmns"
 				}
 			],
 			"scriptLines": [
 				"source(output(",
-				"          {License_Issue_Date     License_Number     Animals_Name     Species     Primary_Breed     Secondary_Breed     ZIP_Code} as string",
+				"          License_Issue_Date as string,",
+				"          License_Number as string,",
+				"          Animals_Name as string,",
+				"          Species as string,",
+				"          Primary_Breed as string,",
+				"          Secondary_Breed as string,",
+				"          ZIP_Code as integer",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     limit: 100,",
 				"     ignoreNoFilesFound: false) ~> readTSVfile",
-				"readTSVfile derive(License_Issue_Dt = toDate({License_Issue_Date}, \"MMMM dd yyyy\"),",
-				"          Secondary_Breed = iifNull({Secondary_Breed},'Unknown'),",
-				"          ZIP_Code = lpad(toString({ZIP_Code}),5,'0'),",
-				"          Species = upper(Species),",
-				"          License_Number = toInteger(translate({License_Number},'S','')),",
-				"          Animal_Name = translate({Animals_Name}, '()[]',''),",
-				"          DI_Job_Id = $Job_Id_Param,",
-				"          DI_Load_Date = currentDate()) ~> TransposeColumns"
+				"readTSVfile derive() ~> TransposeCoulmns"
 			]
 		}
 	}
