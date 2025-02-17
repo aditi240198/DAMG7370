@@ -16,6 +16,9 @@
 			"transformations": [
 				{
 					"name": "TransposeCoulmns"
+				},
+				{
+					"name": "PickRequiredColumns"
 				}
 			],
 			"scriptLines": [
@@ -39,10 +42,26 @@
 				"          {Secondary Breed} = iifNull(Secondary_Breed, 'Unknown'),",
 				"          {ZIP Code} = lpad(toString(ZIP_Code),5,'0'),",
 				"          Species = upper(Species),",
-				"          License_Number = toInteger(translate(License_Number, 'S','')),",
-				"          Animal_Name = translate(Animals_Name, '()[]',''),",
+				"          {License Number} = toInteger(translate(License_Number, 'S','')),",
+				"          {Animal Name} = translate(Animals_Name, '()[]',''),",
 				"          DI_Job_Id = $Job_Id_Parameter,",
-				"          DI_Load_Date = currentDate()) ~> TransposeCoulmns"
+				"          DI_Load_Date = currentDate()) ~> TransposeCoulmns",
+				"TransposeCoulmns select(mapColumn(",
+				"          License_Number = {License Number},",
+				"          Animals_Name,",
+				"          Species,",
+				"          Primary_Breed,",
+				"          Secondary_Breed,",
+				"          ZIP_Code,",
+				"          {License Issue Date},",
+				"          {Secondary Breed},",
+				"          {ZIP Code},",
+				"          Animal_Name = {Animal Name},",
+				"          DI_Job_Id,",
+				"          DI_Load_Date",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> PickRequiredColumns"
 			]
 		}
 	}
