@@ -55,11 +55,11 @@
 				"          DI_Job_Id = $Job_Id_Parameter,",
 				"          DI_Load_Date = currentDate()) ~> TransposeCoulmns",
 				"TransposeCoulmns select(mapColumn(",
-				"          Species = {Species New},",
 				"          Primary_Breed,",
 				"          {License Issue Date},",
 				"          {Secondary Breed},",
 				"          {ZIP Code},",
+				"          {Species New},",
 				"          {License Number},",
 				"          {Animal Name},",
 				"          DI_Job_Id,",
@@ -88,12 +88,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     stageInsert: true,",
-				"     mapColumn(",
-				"          SPECIES = Species,",
-				"          PRIMARY_BREED = Primary_Breed,",
-				"          DI_JOB_ID = DI_Job_Id",
-				"     )) ~> SinkSnowflake"
+				"     stageInsert: true) ~> SinkSnowflake"
 			]
 		}
 	}
