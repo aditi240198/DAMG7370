@@ -41,7 +41,7 @@
 				"          Species = upper(Species),",
 				"          License_Number = toInteger(translate(License_Number, 'S','')),",
 				"          Animal_Name = translate(Animals_Name, '()[]',''),",
-				"          DI_Job_Id = ERROR_FUNCTION(''),",
+				"          DI_Job_Id = $Job_Id_Parameter,",
 				"          DI_Load_Date = currentDate()) ~> TransposeCoulmns"
 			]
 		}
