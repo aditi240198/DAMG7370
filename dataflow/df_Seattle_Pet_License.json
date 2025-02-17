@@ -49,13 +49,13 @@
 				"readTSVfile derive({License Issue Date} = toDate(License_Issue_Date, \"MMMM dd yyyy\"),",
 				"          {Secondary Breed} = iifNull(Secondary_Breed, 'Unknown'),",
 				"          {ZIP Code} = lpad(toString(ZIP_Code),5,'0'),",
-				"          Species = upper(Species),",
+				"          {Species New} = upper(Species),",
 				"          {License Number} = toInteger(translate(License_Number, 'S','')),",
 				"          {Animal Name} = translate(Animals_Name, '()[]',''),",
 				"          DI_Job_Id = $Job_Id_Parameter,",
 				"          DI_Load_Date = currentDate()) ~> TransposeCoulmns",
 				"TransposeCoulmns select(mapColumn(",
-				"          Species,",
+				"          Species = {Species New},",
 				"          Primary_Breed,",
 				"          {License Issue Date},",
 				"          {Secondary Breed},",
@@ -88,7 +88,12 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     stageInsert: true) ~> SinkSnowflake"
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          SPECIES = Species,",
+				"          PRIMARY_BREED = Primary_Breed,",
+				"          DI_JOB_ID = DI_Job_Id",
+				"     )) ~> SinkSnowflake"
 			]
 		}
 	}
