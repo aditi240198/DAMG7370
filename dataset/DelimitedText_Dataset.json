@@ -5,40 +5,19 @@
 			"referenceName": "AzureDataLakeStorage_LS",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"FileName": {
-				"type": "string",
-				"defaultValue": "test.txt"
-			},
-			"FileDelimiter": {
-				"type": "string",
-				"defaultValue": "|"
-			}
-		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@dataset().FileName",
-					"type": "Expression"
-				},
+				"fileName": "Seattle_Pet_Licenses_Updated.tsv",
 				"fileSystem": "bronze"
 			},
-			"columnDelimiter": {
-				"value": "@dataset().FileDelimiter",
-				"type": "Expression"
-			},
+			"columnDelimiter": "\t",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"name": "License_Issue_Date\tLicense_Number\tAnimals_Name\tSpecies\tPrimary_Breed\tSecondary_Breed\tZIP_Code",
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
