@@ -5,14 +5,23 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"name": "source1"
+					"dataset": {
+						"referenceName": "DelimitedText_Dataset",
+						"type": "DatasetReference"
+					},
+					"name": "readTSVfile"
 				}
 			],
 			"sinks": [],
 			"transformations": [],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1"
+				"source(output(",
+				"          {License_Issue_Date     License_Number     Animals_Name     Species     Primary_Breed     Secondary_Breed     ZIP_Code} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     limit: 100,",
+				"     ignoreNoFilesFound: false) ~> readTSVfile"
 			]
 		}
 	}
