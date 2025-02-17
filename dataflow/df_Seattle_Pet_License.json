@@ -13,7 +13,11 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "TransposeColumns"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          {License_Issue_Date     License_Number     Animals_Name     Species     Primary_Breed     Secondary_Breed     ZIP_Code} as string",
@@ -21,7 +25,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     limit: 100,",
-				"     ignoreNoFilesFound: false) ~> readTSVfile"
+				"     ignoreNoFilesFound: false) ~> readTSVfile",
+				"readTSVfile derive() ~> TransposeColumns"
 			]
 		}
 	}
