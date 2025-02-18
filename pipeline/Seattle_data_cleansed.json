@@ -5,6 +5,8 @@
 			{
 				"name": "CleanPetLicData",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.00:30:00",
@@ -20,7 +22,7 @@
 						"type": "DataFlowReference",
 						"parameters": {
 							"Job_Id_Parameter": {
-								"value": "'@{pipeline().RunId}'",
+								"value": "'@{substring(pipeline().RunId,1,10)}'",
 								"type": "Expression"
 							}
 						}
