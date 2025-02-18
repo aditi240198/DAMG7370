@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "DelimitedText_Dataset",
+						"referenceName": "DelimitedText_source",
 						"type": "DatasetReference"
 					},
 					"name": "readTSVfile"
