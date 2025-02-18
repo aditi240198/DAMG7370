@@ -12,12 +12,62 @@
 					"name": "sourceGeoFile"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_Location_DIM",
+						"type": "DatasetReference"
+					},
+					"name": "SinkLocationDim"
+				}
+			],
+			"transformations": [
+				{
+					"name": "surrogateKey"
+				},
+				{
+					"name": "DerivedColumns"
+				}
+			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
+				"parameters{",
+				"     Job_Id as string (\"13\")",
+				"}",
+				"source(output(",
+				"          state_fips as short,",
+				"          state as string,",
+				"          state_abbr as string,",
+				"          zipcode as string,",
+				"          county as string,",
+				"          city as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> sourceGeoFile"
+				"     ignoreNoFilesFound: false) ~> sourceGeoFile",
+				"sourceGeoFile keyGenerate(output(SK_ID as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey",
+				"surrogateKey derive(DI_LOAD_DT = currentTimestamp(),",
+				"          DI_JOB_ID = $Job_Id) ~> DerivedColumns",
+				"DerivedColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          LOCATION_SK as string,",
+				"          CITY as string,",
+				"          STATE as string,",
+				"          STATE_ABBR as string,",
+				"          ZIP as string,",
+				"          DI_JOB_ID as string,",
+				"          DI_LOAD_DT as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true) ~> SinkLocationDim"
 			]
 		}
 	}
