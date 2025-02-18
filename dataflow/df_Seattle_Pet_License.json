@@ -86,9 +86,18 @@
 				"     upsertable:false,",
 				"     truncate:true,",
 				"     format: 'table',",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     stageInsert: true) ~> SinkSnowflake"
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          LICENSE_ISSUE_DATE = {License Issue Date},",
+				"          LICENSE_NUMBER = {License Number},",
+				"          ANIMAL_NAME = {Animal Name},",
+				"          SPECIES = {Species New},",
+				"          PRIMARY_BREED = Primary_Breed,",
+				"          SECONDARY_BREED = {Secondary Breed},",
+				"          ZIP_CODE = {ZIP Code},",
+				"          DI_JOB_ID = DI_Job_Id,",
+				"          DI_LOAD_DATE = DI_Load_Date",
+				"     )) ~> SinkSnowflake"
 			]
 		}
 	}
