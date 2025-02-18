@@ -19,7 +19,10 @@
 						"referenceName": "df_Seattle_Pet_License",
 						"type": "DataFlowReference",
 						"parameters": {
-							"Job_Id_Parameter": "\"10\""
+							"Job_Id_Parameter": {
+								"value": "'@{pipeline().RunId}'",
+								"type": "Expression"
+							}
 						}
 					},
 					"compute": {
