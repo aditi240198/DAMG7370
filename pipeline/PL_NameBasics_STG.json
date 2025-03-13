@@ -45,7 +45,14 @@
 							"type": "SnowflakeImportCopyCommand"
 						}
 					},
-					"enableStaging": false,
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "linkedService1",
+							"type": "LinkedServiceReference"
+						},
+						"path": "stage"
+					},
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
@@ -110,12 +117,20 @@
 								}
 							},
 							{
+								"source": {
+									"name": "DI_JOB_ID",
+									"type": "String"
+								},
 								"sink": {
 									"name": "DI_JOB_ID",
 									"type": "String"
 								}
 							},
 							{
+								"source": {
+									"name": "DI_LOAD_DT",
+									"type": "String"
+								},
 								"sink": {
 									"name": "DI_LOAD_DT",
 									"type": "DateTime"
