@@ -1,0 +1,55 @@
+{
+	"name": "sf_NameBasicStg",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Snowflake2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeTable",
+		"schema": [
+			{
+				"name": "NCONST",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "PRIMARYNAME",
+				"precision": 105,
+				"scale": 0
+			},
+			{
+				"name": "BIRTHYEAR",
+				"precision": 5,
+				"scale": 0
+			},
+			{
+				"name": "DEATHYEAR",
+				"precision": 5,
+				"scale": 0
+			},
+			{
+				"name": "PRIMARYPROFESSION",
+				"scale": 0
+			},
+			{
+				"name": "KNOWNFORTITLES",
+				"scale": 0
+			},
+			{
+				"name": "DI_JOB_ID",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "DI_LOAD_DT",
+				"precision": 10,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"schema": "PET_LICENSING",
+			"table": "STG_NAME_BASICS"
+		}
+	}
+}

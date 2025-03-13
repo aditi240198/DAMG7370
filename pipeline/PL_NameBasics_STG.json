@@ -1,0 +1,143 @@
+{
+	"name": "PL_NameBasics_STG",
+	"properties": {
+		"activities": [
+			{
+				"name": "dsNamebasicStg",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"additionalColumns": [
+							{
+								"name": "DI_LOAD_DT",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "DI_JOB_ID",
+								"value": "\"7\""
+							}
+						],
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SnowflakeSink",
+						"importSettings": {
+							"type": "SnowflakeImportCopyCommand"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "nconst",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NCONST",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "primaryName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PRIMARYNAME",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "birthYear",
+									"type": "String"
+								},
+								"sink": {
+									"name": "BIRTHYEAR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "deathYear",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DEATHYEAR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "primaryProfession",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PRIMARYPROFESSION",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "knownForTitles",
+									"type": "String"
+								},
+								"sink": {
+									"name": "KNOWNFORTITLES",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "DI_JOB_ID",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "DI_LOAD_DT",
+									"type": "DateTime"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_NameBasicsClean",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sf_NameBasicStg",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
