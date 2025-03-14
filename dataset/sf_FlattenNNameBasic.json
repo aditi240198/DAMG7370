@@ -1,0 +1,63 @@
+{
+	"name": "sf_FlattenNNameBasic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Snowflake2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeTable",
+		"schema": [
+			{
+				"name": "NCONST",
+				"type": "VARCHAR",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "PRIMARYNAME",
+				"type": "VARCHAR",
+				"precision": 105,
+				"scale": 0
+			},
+			{
+				"name": "BIRTHYEAR",
+				"type": "VARCHAR",
+				"precision": 5,
+				"scale": 0
+			},
+			{
+				"name": "DEATHYEAR",
+				"type": "VARCHAR",
+				"precision": 5,
+				"scale": 0
+			},
+			{
+				"name": "PRIMARYPROFESSION",
+				"type": "VARCHAR",
+				"scale": 0
+			},
+			{
+				"name": "KNOWNFORTITLES",
+				"type": "VARCHAR",
+				"scale": 0
+			},
+			{
+				"name": "DI_JOB_ID",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "DI_LOAD_DT",
+				"type": "DATE",
+				"precision": 10,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"schema": "PET_LICENSING",
+			"table": "FLATTEN_STG_NAME_BASICS"
+		}
+	}
+}
