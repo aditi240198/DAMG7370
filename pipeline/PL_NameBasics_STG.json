@@ -27,7 +27,7 @@
 							},
 							{
 								"name": "DI_JOB_ID",
-								"value": "\"7\""
+								"value": "7"
 							}
 						],
 						"storeSettings": {
@@ -40,7 +40,7 @@
 						}
 					},
 					"sink": {
-						"type": "SnowflakeSink",
+						"type": "SnowflakeV2Sink",
 						"importSettings": {
 							"type": "SnowflakeImportCopyCommand"
 						}
@@ -147,7 +147,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "sf_NameBasicStg",
+						"referenceName": "SF_STGNAMEBASICS",
 						"type": "DatasetReference"
 					}
 				]
