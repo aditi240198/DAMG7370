@@ -1,0 +1,259 @@
+{
+	"name": "STG_EARLYARRIVAL_ALL TABLES",
+	"properties": {
+		"activities": [
+			{
+				"name": "Stg_Load_Customer_Data",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": false,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SnowflakeSink",
+						"importSettings": {
+							"type": "SnowflakeImportCopyCommand"
+						}
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "AzureBlobStoragespring2025",
+							"type": "LinkedServiceReference"
+						},
+						"path": "stage"
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "customerid",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CUSTOMER_ID",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CUSTOMER_NAME",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "billTo",
+									"type": "String"
+								},
+								"sink": {
+									"name": "BILL_TO",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Customer1_Data",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SF_STG_LOAD_CUSTOMER",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Stg_Load_Invoice_Data",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Stg_Load_Customer_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SnowflakeSink",
+						"importSettings": {
+							"type": "SnowflakeImportCopyCommand"
+						}
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "AzureBlobStoragespring2025",
+							"type": "LinkedServiceReference"
+						},
+						"path": "stage"
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "invoiceId",
+									"type": "String"
+								},
+								"sink": {
+									"name": "INVOICE_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "customerid",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CUSTOMER_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "invoiceDate",
+									"type": "String"
+								},
+								"sink": {
+									"name": "INVOICE_DT",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ShipTo",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SHIP_TO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ShipTo_City",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SHIP_TO_CITY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ShipTo_Country",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SHIP_TO_COUNTRY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SalespersonPersonID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SALESPERSON_PERSON_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SalespersonName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SALESPERSON_NAME",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "total_product_cnt",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TOTAL_PRODUCT_CNT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Total",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TOTAL_PRODUCT_COST",
+									"type": "Decimal"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_STG_InvoiceLoad",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SF_STG_LOAD_INVOICE",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}

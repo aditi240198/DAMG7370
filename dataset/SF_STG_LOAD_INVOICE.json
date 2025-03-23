@@ -1,0 +1,67 @@
+{
+	"name": "SF_STG_LOAD_INVOICE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Snowflake2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeTable",
+		"schema": [
+			{
+				"name": "INVOICE_ID",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "CUSTOMER_ID",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "INVOICE_DT",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "SHIP_TO",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "SHIP_TO_CITY",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "SHIP_TO_COUNTRY",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "SALESPERSON_PERSON_ID",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "SALESPERSON_NAME",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "TOTAL_PRODUCT_CNT",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "TOTAL_PRODUCT_COST",
+				"precision": 10,
+				"scale": 2
+			}
+		],
+		"typeProperties": {
+			"schema": "PET_LICENSING",
+			"table": "STG_INVOICE"
+		}
+	}
+}
