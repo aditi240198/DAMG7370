@@ -2,7 +2,7 @@
 	"name": "SF_STG_LOAD_CUSTOMER",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Snowflake2",
+			"referenceName": "Snowflake3",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
