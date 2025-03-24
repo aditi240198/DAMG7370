@@ -3,11 +3,235 @@
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
-			"sinks": [],
-			"transformations": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SF_STG_LOAD_INVOICE",
+						"type": "DatasetReference"
+					},
+					"name": "StgInvoice"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimCustomer",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerDIM"
+				},
+				{
+					"dataset": {
+						"referenceName": "sf_FACT_INVOICE_LOAD",
+						"type": "DatasetReference"
+					},
+					"name": "MaxInvoiceSK"
+				},
+				{
+					"dataset": {
+						"referenceName": "STG_PARK_INVOICE",
+						"type": "DatasetReference"
+					},
+					"name": "ParkInvoiceStg"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "STG_PARK_INVOICE",
+						"type": "DatasetReference"
+					},
+					"name": "ParkLoad"
+				},
+				{
+					"dataset": {
+						"referenceName": "sf_FACT_INVOICE_LOAD",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ParkMerge"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "CustomerIDNotFound"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
 			"scriptLines": [
-				""
+				"source(output(",
+				"          INVOICE_ID as decimal(38,0),",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          INVOICE_DT as date,",
+				"          SHIP_TO as string,",
+				"          SHIP_TO_CITY as string,",
+				"          SHIP_TO_COUNTRY as string,",
+				"          SALESPERSON_PERSON_ID as decimal(38,0),",
+				"          SALESPERSON_NAME as string,",
+				"          TOTAL_PRODUCT_CNT as decimal(38,0),",
+				"          TOTAL_PRODUCT_COST as decimal(10,2)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> StgInvoice",
+				"source(output(",
+				"          CUSTOMER_SK as decimal(38,0),",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          CUSTOMER_NAME as string,",
+				"          DI_CREATEDDT as timestamp,",
+				"          PID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> CustomerDIM",
+				"source(output(",
+				"          MAXINVOICESK as decimal(38,0)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'SELECT NVL(MAX(invoice_sk), 0) AS MaxInvoiceSK FROM fact_invoice\\n',",
+				"     format: 'query') ~> MaxInvoiceSK",
+				"source(output(",
+				"          INVOICE_ID as decimal(38,0),",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          INVOICE_DT as date,",
+				"          SHIP_TO as string,",
+				"          SHIP_TO_CITY as string,",
+				"          SHIP_TO_COUNTRY as string,",
+				"          SALESPERSON_PERSON_ID as decimal(38,0),",
+				"          SALESPERSON_NAME as string,",
+				"          TOTAL_PRODUCT_CNT as decimal(38,0),",
+				"          TOTAL_PRODUCT_COST as decimal(10,2)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> ParkInvoiceStg",
+				"StgInvoice, ParkInvoiceStg union(byName: true)~> ParkMerge",
+				"ParkMerge, CustomerDIM join(ParkMerge@CUSTOMER_ID == CustomerDIM@CUSTOMER_ID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"select1 split(isNull(CUSTOMER_SK),",
+				"     disjoint: false) ~> CustomerIDNotFound@(CustomerIDNotFound, CustomerIDFound)",
+				"join1 select(mapColumn(",
+				"          INVOICE_ID,",
+				"          CUSTOMER_ID1 = ParkMerge@CUSTOMER_ID,",
+				"          INVOICE_DT,",
+				"          SHIP_TO,",
+				"          SHIP_TO_CITY,",
+				"          SHIP_TO_COUNTRY,",
+				"          SALESPERSON_PERSON_ID,",
+				"          SALESPERSON_NAME,",
+				"          TOTAL_PRODUCT_CNT,",
+				"          TOTAL_PRODUCT_COST,",
+				"          CUSTOMER_SK,",
+				"          CUSTOMER_ID = CustomerDIM@CUSTOMER_ID,",
+				"          CUSTOMER_NAME,",
+				"          DI_CREATEDDT,",
+				"          PID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"CustomerIDNotFound@CustomerIDFound keyGenerate(output(RowNum as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey1",
+				"surrogateKey1 select(mapColumn(",
+				"          INVOICE_ID,",
+				"          INVOICE_DT,",
+				"          TOTAL_PRODUCT_CNT,",
+				"          TOTAL_PRODUCT_COST,",
+				"          CUSTOMER_SK,",
+				"          DI_CREATEDDT,",
+				"          PID,",
+				"          RowNum",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> select2",
+				"select2, MaxInvoiceSK join(1 == 1,",
+				"     joinType:'cross',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"join2 derive(INVOICE_SK = RowNum + MAXINVOICESK) ~> derivedColumn1",
+				"CustomerIDNotFound@CustomerIDNotFound sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          INVOICE_ID as decimal(38,0),",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          INVOICE_DT as date,",
+				"          SHIP_TO as string,",
+				"          SHIP_TO_CITY as string,",
+				"          SHIP_TO_COUNTRY as string,",
+				"          SALESPERSON_PERSON_ID as decimal(38,0),",
+				"          SALESPERSON_NAME as string,",
+				"          TOTAL_PRODUCT_CNT as decimal(38,0),",
+				"          TOTAL_PRODUCT_COST as decimal(10,2)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          INVOICE_ID,",
+				"          CUSTOMER_ID = CUSTOMER_ID1,",
+				"          INVOICE_DT,",
+				"          SHIP_TO,",
+				"          SHIP_TO_CITY,",
+				"          SHIP_TO_COUNTRY,",
+				"          SALESPERSON_PERSON_ID,",
+				"          SALESPERSON_NAME,",
+				"          TOTAL_PRODUCT_CNT,",
+				"          TOTAL_PRODUCT_COST",
+				"     )) ~> ParkLoad",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          INVOICE_SK as decimal(38,0),",
+				"          INVOICE_ID as decimal(38,0),",
+				"          CUSTOMER_SK as decimal(38,0),",
+				"          INVOICE_DT as date,",
+				"          TOTAL_PRODUCT_CNT as decimal(38,0),",
+				"          TOTAL_PRODUCT_COST as decimal(10,2),",
+				"          DI_CREATEDDT as timestamp,",
+				"          PID as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          INVOICE_SK,",
+				"          INVOICE_ID,",
+				"          CUSTOMER_SK,",
+				"          INVOICE_DT,",
+				"          TOTAL_PRODUCT_CNT,",
+				"          TOTAL_PRODUCT_COST,",
+				"          DI_CREATEDDT,",
+				"          PID",
+				"     )) ~> sink1"
 			]
 		}
 	}
