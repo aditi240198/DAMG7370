@@ -80,7 +80,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_Customer1_Data",
+						"referenceName": "ds_STG_Customer2",
 						"type": "DatasetReference"
 					}
 				],
@@ -96,14 +96,7 @@
 				"type": "Copy",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Stg_Load_Customer_Data",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.00:30:00",
 					"retry": 0,
@@ -278,6 +271,32 @@
 						"parameters": {
 							"parameter1": "13"
 						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "df_FactInvoiceLoad",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_FACT_INVOICE",
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
