@@ -1,0 +1,150 @@
+{
+	"name": "df_CUSTOMER_DIM",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SF_STG_LOAD_CUSTOMER",
+						"type": "DatasetReference"
+					},
+					"name": "SourceSTGCustomer"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimCustomer",
+						"type": "DatasetReference"
+					},
+					"name": "CreateMaxSK"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimCustomer",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerDIM"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DimCustomer",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "filterExistingRows"
+				},
+				{
+					"name": "surrogateKeyCUSTOMER"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     parameter1 as integer (13)",
+				"}",
+				"source(output(",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          CUSTOMER_NAME as string,",
+				"          BILL_TO as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> SourceSTGCustomer",
+				"source(output(",
+				"          MAXCUSTOMERSK as decimal(38,0)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'SELECT NVL(MAX(customer_sk), 0) AS MaxCustomerSK FROM dim_customer\\n',",
+				"     format: 'query') ~> CreateMaxSK",
+				"source(output(",
+				"          CUSTOMER_SK as decimal(38,0),",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          CUSTOMER_NAME as string,",
+				"          DI_CREATEDDT as timestamp,",
+				"          PID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> CustomerDIM",
+				"SourceSTGCustomer, CreateMaxSK join(1==1,",
+				"     joinType:'cross',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 aggregate(groupBy(CUSTOMER_NAME,",
+				"          CUSTOMER_ID,",
+				"          MAXCUSTOMERSK),",
+				"     COUNT = count(CUSTOMER_ID)) ~> aggregate1",
+				"aggregate1, CustomerDIM join(aggregate1@CUSTOMER_ID == CustomerDIM@CUSTOMER_ID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"join2 filter(isNull(CustomerDIM@CUSTOMER_ID)) ~> filterExistingRows",
+				"select1 keyGenerate(output(RowNum as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKeyCUSTOMER",
+				"filterExistingRows select(mapColumn(",
+				"          CUSTOMER_NAME = aggregate1@CUSTOMER_NAME,",
+				"          CUSTOMER_ID1 = aggregate1@CUSTOMER_ID,",
+				"          MAXCUSTOMERSK,",
+				"          COUNT,",
+				"          CUSTOMER_SK,",
+				"          CUSTOMER_ID = CustomerDIM@CUSTOMER_ID,",
+				"          CUSTOMER_NAME = CustomerDIM@CUSTOMER_NAME,",
+				"          DI_CREATEDDT,",
+				"          PID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"surrogateKeyCUSTOMER derive(CUSTOMER_SK = RowNum + MAXCUSTOMERSK,",
+				"          DI_CREATEDDT = currentDate(),",
+				"          PID = $parameter1) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CUSTOMER_SK as decimal(38,0),",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          CUSTOMER_NAME as string,",
+				"          DI_CREATEDDT as timestamp,",
+				"          PID as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          CUSTOMER_SK,",
+				"          CUSTOMER_ID = CUSTOMER_ID1,",
+				"          CUSTOMER_NAME,",
+				"          DI_CREATEDDT,",
+				"          PID",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
